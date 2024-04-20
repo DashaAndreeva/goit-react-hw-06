@@ -1,26 +1,28 @@
-import css from "./ContactForm.module.css";
-import { Formik, Form, Field } from "formik";
-import { ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { addContact } from "../../redux/contactsSlice";
+import { useDispatch } from "react-redux";
 import * as Yup from "yup";
+
+import css from "./ContactForm.module.css";
+
+const initialValues = { name: "", tel: "" };
+
+const FeedbackSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+  tel: Yup.string()
+    .min(3, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+});
 
 export default function ContactForm() {
   const dispatch = useDispatch();
 
-  const initialValues = { name: "", tel: "" };
-
-  const FeedbackSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(3, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    tel: Yup.string()
-      .min(3, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-  });
-
   const handleSubmit = (values, { resetForm }) => {
-    // dispatch(addContact(values.name, values.number));
+    dispatch(addContact(values.name, values.tel));
     resetForm();
   };
 
@@ -37,12 +39,7 @@ export default function ContactForm() {
               <label htmlFor="nameId" className={css["form-label"]}>
                 Name
               </label>
-              <Field
-                name="name"
-                type="text"
-                id={nameId}
-                className={css["input-form"]}
-              />
+              <Field name="name" type="text" className={css["input-form"]} />
               <ErrorMessage name="name" as="span" />
             </div>
 
@@ -50,12 +47,7 @@ export default function ContactForm() {
               <label htmlFor="telId" className={css["form-label"]}>
                 Number
               </label>
-              <Field
-                name="tel"
-                type="tel"
-                id={telId}
-                className={css["input-form"]}
-              />
+              <Field name="tel" type="tel" className={css["input-form"]} />
               <ErrorMessage name="tel" as="span" />
             </div>
           </div>
